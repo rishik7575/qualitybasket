@@ -1,37 +1,925 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orders</title>
-    <link rel="stylesheet" href="styles/style.css">
+    <title>Quality Basket - Your Orders</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background: #f9f9f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header/Navbar Styles */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            width: 100%;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo span {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #28a745; /* basket-green */
+        }
+
+        .desktop-nav {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #28a745; /* basket-green */
+        }
+
+        .nav-link svg {
+            margin-right: 0.25rem;
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .cart-link {
+            position: relative;
+            padding: 0.5rem;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -0.25rem;
+            right: -0.25rem;
+            background-color: #dc3545; /* basket-red */
+            color: white;
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+        }
+
+        .mobile-menu-button {
+            display: none;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* Mobile menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+        }
+
+        .mobile-menu-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background-color: white;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .mobile-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .mobile-menu-close {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .mobile-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .mobile-nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            text-decoration: none;
+            color: #333;
+            border-radius: 0.25rem;
+            transition: background-color 0.3s;
+        }
+
+        .mobile-nav-link:hover {
+            background-color: #f0f0f0;
+        }
+
+        .mobile-nav-link svg {
+            margin-right: 0.75rem;
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        /* Main Content Styles */
+        main {
+            flex-grow: 1;
+        }
+
+        /* Orders Page Styles */
+        .page-header {
+            text-align: left;
+            margin: 2rem 0;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .orders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .order-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-header {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #eee;
+        }
+
+        @media (min-width: 768px) {
+            .order-header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        .order-id {
+            font-size: 1.125rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        @media (min-width: 768px) {
+            .order-id {
+                margin-bottom: 0;
+            }
+        }
+
+        .order-date {
+            display: flex;
+            align-items: center;
+            color: #666;
+            font-size: 0.875rem;
+        }
+
+        .order-date svg {
+            margin-right: 0.25rem;
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .order-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .order-status {
+                margin-top: 0;
+            }
+        }
+
+        .order-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .badge-pending {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        .badge-shipped {
+            background-color: #cce5ff;
+            color: #004085;
+            border: 1px solid #b8daff;
+        }
+
+        .badge-delivered {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .badge-canceled {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .order-amount {
+            font-weight: bold;
+        }
+
+        .order-content {
+            padding: 1rem;
+        }
+
+        .order-items {
+            margin-bottom: 1rem;
+        }
+
+        .order-item {
+            display: flex;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-image {
+            width: 4rem;
+            height: 4rem;
+            border-radius: 0.25rem;
+            overflow: hidden;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-details {
+            flex-grow: 1;
+        }
+
+        .item-name {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .item-quantity {
+            color: #666;
+            font-size: 0.875rem;
+        }
+
+        .item-price {
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        .order-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        .delivery-info {
+            display: flex;
+            align-items: center;
+            color: #666;
+            font-size: 0.875rem;
+        }
+
+        .delivery-info svg {
+            margin-right: 0.5rem;
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .track-button {
+            padding: 0.5rem 1rem;
+            background-color: transparent;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .track-button:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Empty Orders State */
+        .empty-orders {
+            text-align: center;
+            padding: 4rem 1rem;
+        }
+
+        .empty-icon {
+            width: 4rem;
+            height: 4rem;
+            margin: 0 auto 1rem;
+            color: #ccc;
+        }
+
+        .empty-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .empty-message {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .shop-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            background-color: #28a745; /* basket-green */
+            color: white;
+            border: none;
+            border-radius: 0.25rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .shop-button:hover {
+            background-color: #218838; /* basket-darkgreen */
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: #f0f0f0;
+            padding-top: 2.5rem;
+            padding-bottom: 1.5rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .footer-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .footer-heading {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .footer-text {
+            color: #666;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-link-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-link {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-link:hover {
+            color: #28a745; /* basket-green */
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            color: #666;
+            transition: color 0.3s;
+        }
+
+        .social-link:hover {
+            color: #28a745; /* basket-green */
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #ddd;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            text-align: center;
+            color: #666;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .desktop-nav {
+                display: none;
+            }
+
+            .mobile-menu-button {
+                display: block;
+            }
+        }
+    </style>
 </head>
-
 <body>
+    <!-- Header with Menu Bar -->
     <header>
-        <div class="logo">Quality Basket</div>
-        <nav class="menu-bar">
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="profile.html">Profile</a></li>
-                <li><a href="delivered.html">Delivered Products</a></li>
-                <li><a href="contact.html">Contact Us</a></li>
-            </ul>
-        </nav>
+        <div class="container">
+            <div class="header-container">
+                <a href="home.html" class="logo">
+                    <span>Quality Basket</span>
+                </a>
+                
+                <nav class="desktop-nav">
+                    <a href="home.html" class="nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                        <span>Home</span>
+                    </a>
+                    
+                    <a href="store.html" class="nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"></path><path d="M6 9V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"></path></svg>
+                        <span>Stores</span>
+                    </a>
+                    
+                    <a href="product.html" class="nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                        <span>Products</span>
+                    </a>
+                    
+                    <a href="login.html" class="nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span>Login</span>
+                    </a>
+                    
+                    <a href="orders.html" class="nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M9 10h6"></path><path d="M12 14V6"></path></svg>
+                        <span>Orders</span>
+                    </a>
+                    
+                    <a href="delivered.html" class="nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                        <span>Delivered</span>
+                    </a>
+                </nav>
+                
+                <div class="nav-buttons">
+                    <a href="#" class="cart-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                        <span class="cart-badge" id="cart-count">0</span>
+                    </a>
+                    
+                    <button class="mobile-menu-button" id="mobile-menu-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
     </header>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-menu-content">
+            <div class="mobile-menu-header">
+                <span class="footer-heading">Quality Basket</span>
+                <button class="mobile-menu-close" id="mobile-menu-close">×</button>
+            </div>
+            <nav class="mobile-nav">
+                <a href="home.html" class="mobile-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span>Home</span>
+                </a>
+                
+                <a href="store.html" class="mobile-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"></path><path d="M6 9V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"></path></svg>
+                    <span>Stores</span>
+                </a>
+                
+                <a href="product.html" class="mobile-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                    <span>Products</span>
+                </a>
+                
+                <a href="login.html" class="mobile-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <span>Login</span>
+                </a>
+                
+                <a href="orders.html" class="mobile-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M9 10h6"></path><path d="M12 14V6"></path></svg>
+                    <span>Orders</span>
+                </a>
+                
+                <a href="delivered.html" class="mobile-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                    <span>Delivered</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+    
     <main>
-        <section class="orders-section">
-            <h1>Your Orders</h1>
-            <ul>
-                <li>Order #12345 - Apples, Milk - Pending</li>
-                <li>Order #12346 - Bread, Butter - Shipped</li>
-            </ul>
-        </section>
+        <div class="container">
+            <div id="orders-container">
+                <!-- Content will be dynamically loaded here -->
+            </div>
+        </div>
     </main>
+    
+    <!-- Footer -->
     <footer>
-        <p>&copy; 2024 Quality Basket. All Rights Reserved.</p>
+        <div class="container">
+            <div class="footer-grid">
+                <!-- About Us -->
+                <div>
+                    <h3 class="footer-heading">About Quality Basket</h3>
+                    <p class="footer-text">
+                        We connect you with the freshest groceries from local stores, bringing quality products right to your doorstep.
+                    </p>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="footer-heading">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li class="footer-link-item">
+                            <a href="home.html" class="footer-link">Home</a>
+                        </li>
+                        <li class="footer-link-item">
+                            <a href="store.html" class="footer-link">Stores</a>
+                        </li>
+                        <li class="footer-link-item">
+                            <a href="#" class="footer-link">Shopping Cart</a>
+                        </li>
+                        <li class="footer-link-item">
+                            <a href="login.html" class="footer-link">My Account</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Contact Info -->
+                <div>
+                    <h3 class="footer-heading">Contact Us</h3>
+                    <ul class="footer-links">
+                        <li class="footer-link-item">Email: support@qualitybasket.com</li>
+                        <li class="footer-link-item">Phone: +1 (555) 123-4567</li>
+                        <li class="footer-link-item">Address: 123 Grocery Lane, Food City</li>
+                    </ul>
+                </div>
+                
+                <!-- Social Media -->
+                <div>
+                    <h3 class="footer-heading">Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                        </a>
+                        <a href="#" class="social-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                        </a>
+                        <a href="#" class="social-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Quality Basket. All Rights Reserved.</p>
+            </div>
+        </div>
     </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Mobile Menu Toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuClose = document.getElementById('mobile-menu-close');
+            
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.style.display = 'block';
+            });
+            
+            mobileMenuClose.addEventListener('click', () => {
+                mobileMenu.style.display = 'none';
+            });
+            
+            // Update cart count
+            updateCartCount();
+            
+            // Check if user is logged in and load orders
+            checkLoginAndLoadOrders();
+        });
+        
+        // Cart Count Update
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const totalCount = cart.reduce((total, item) => total + (item.quantity || 1), 0);
+            
+            const cartCount = document.getElementById('cart-count');
+            if (cartCount) {
+                cartCount.textContent = totalCount;
+            }
+        }
+        
+        // Check if user is logged in and load orders
+        function checkLoginAndLoadOrders() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            
+            if (!user || !user.isLoggedIn) {
+                // If user is not logged in, show login prompt
+                showLoginPrompt();
+            } else {
+                // User is logged in, load orders
+                loadOrders();
+            }
+        }
+        
+        // Show login prompt
+        function showLoginPrompt() {
+            const container = document.getElementById('orders-container');
+            
+            container.innerHTML = `
+                <div class="empty-orders">
+                    <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <h2 class="empty-title">Please Login First</h2>
+                    <p class="empty-message">You need to login to view your orders.</p>
+                    <a href="login.html" class="shop-button">Go to Login</a>
+                </div>
+            `;
+        }
+        
+        // Load orders
+        function loadOrders() {
+            // Get orders from localStorage or create some demo orders if none exist
+            let orders = JSON.parse(localStorage.getItem('orders')) || [];
+            
+            // If no orders, create some demo orders
+            if (orders.length === 0) {
+                orders = createDemoOrders();
+                localStorage.setItem('orders', JSON.stringify(orders));
+            }
+            
+            const container = document.getElementById('orders-container');
+            
+            if (orders.length === 0) {
+                // Show empty state if still no orders
+                container.innerHTML = `
+                    <div class="empty-orders">
+                        <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M9 10h6"></path><path d="M12 14V6"></path></svg>
+                        <h2 class="empty-title">No Orders Found</h2>
+                        <p class="empty-message">You haven't placed any orders yet.</p>
+                        <a href="store.html" class="shop-button">Start Shopping</a>
+                    </div>
+                `;
+            } else {
+                // Show orders list
+                let html = `
+                    <div class="page-header">
+                        <h1 class="page-title">Your Orders</h1>
+                    </div>
+                    <div class="orders-list">
+                `;
+                
+                // Loop through orders and create HTML for each
+                orders.forEach(order => {
+                    html += createOrderHtml(order);
+                });
+                
+                html += `</div>`;
+                container.innerHTML = html;
+                
+                // Attach track order button events
+                const trackButtons = document.querySelectorAll('.track-button');
+                trackButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        alert('Tracking information is not available in this demo.');
+                    });
+                });
+            }
+        }
+        
+        // Create HTML for an order
+        function createOrderHtml(order) {
+            // Define badge class based on status
+            let badgeClass = '';
+            switch (order.status) {
+                case 'pending':
+                    badgeClass = 'badge-pending';
+                    break;
+                case 'shipped':
+                    badgeClass = 'badge-shipped';
+                    break;
+                case 'delivered':
+                    badgeClass = 'badge-delivered';
+                    break;
+                case 'canceled':
+                    badgeClass = 'badge-canceled';
+                    break;
+                default:
+                    badgeClass = 'badge-pending';
+            }
+            
+            // Create items HTML
+            let itemsHtml = '';
+            order.items.forEach(item => {
+                itemsHtml += `
+                    <div class="order-item">
+                        <div class="item-image">
+                            <img src="${item.imageUrl}" alt="${item.name}">
+                        </div>
+                        <div class="item-details">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-quantity">${item.quantity} × ₹${item.price.toFixed(2)}</div>
+                        </div>
+                        <div class="item-price">₹${(item.quantity * item.price).toFixed(2)}</div>
+                    </div>
+                `;
+            });
+            
+            // Format date
+            const orderDate = new Date(order.date);
+            const formattedDate = orderDate.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            // Create complete order HTML
+            return `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div>
+                            <div class="order-id">Order #${order.id.substring(6, 14)}</div>
+                            <div class="order-date">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                ${formattedDate}
+                            </div>
+                        </div>
+                        <div class="order-status">
+                            <span class="order-badge ${badgeClass}">${order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span>
+                            <span class="order-amount">₹${order.totalAmount.toFixed(2)}</span>
+                        </div>
+                    </div>
+                    <div class="order-content">
+                        <div class="order-items">
+                            ${itemsHtml}
+                        </div>
+                    </div>
+                    <div class="order-footer">
+                        <div class="delivery-info">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                            Estimated Delivery: 3-5 business days
+                        </div>
+                        <button class="track-button">Track Order</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Create demo orders
+        function createDemoOrders() {
+            return [
+                {
+                    id: `order-${Date.now() - 100000}`,
+                    items: [
+                        {
+                            id: 'apple-01',
+                            name: 'Fresh Apples',
+                            price: 5.99,
+                            quantity: 2,
+                            imageUrl: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&q=80&w=1000',
+                        },
+                        {
+                            id: 'milk-01',
+                            name: 'Organic Milk',
+                            price: 3.49,
+                            quantity: 1,
+                            imageUrl: 'https://images.unsplash.com/photo-1563636619-e9143da7973b?auto=format&fit=crop&q=80&w=1000',
+                        }
+                    ],
+                    totalAmount: 15.47,
+                    status: 'pending',
+                    date: new Date(Date.now() - 100000).toISOString(),
+                },
+                {
+                    id: `order-${Date.now() - 200000}`,
+                    items: [
+                        {
+                            id: 'bread-01',
+                            name: 'Whole Wheat Bread',
+                            price: 2.99,
+                            quantity: 1,
+                            imageUrl: 'https://images.unsplash.com/photo-1598373182133-52452f7691ef?auto=format&fit=crop&q=80&w=2000',
+                        },
+                        {
+                            id: 'eggs-01',
+                            name: 'Free Range Eggs',
+                            price: 4.99,
+                            quantity: 2,
+                            imageUrl: 'https://images.unsplash.com/photo-1489164897030-26f9334c8309?auto=format&fit=crop&q=80&w=1000',
+                        }
+                    ],
+                    totalAmount: 12.97,
+                    status: 'shipped',
+                    date: new Date(Date.now() - 200000).toISOString(),
+                }
+            ];
+        }
+    </script>
 </body>
-
 </html>

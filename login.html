@@ -3,33 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clean and Organized Auth Modal</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
-    <script src="script.js" defer></script> <!-- Link to your JavaScript file -->
+    <title>Quality Basket - Login</title>
     <style>
-        /* Inline CSS for demonstration, replace with your external styles.css */
-        body {
-            font-family: Arial, sans-serif;
+        /* Global Styles */
+        * {
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
+            box-sizing: border-box;
         }
-        #login-button {
-            display: block;
-            margin: 20px auto;
-            padding: 10px 20px;
-            font-size: 18px;
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background: #f9f9f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header/Navbar Styles */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            width: 100%;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo span {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #28a745; /* basket-green */
+        }
+
+        .desktop-nav {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #28a745; /* basket-green */
+        }
+
+        .nav-link svg {
+            margin-right: 0.25rem;
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .cart-link {
+            position: relative;
+            padding: 0.5rem;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -0.25rem;
+            right: -0.25rem;
+            background-color: #dc3545; /* basket-red */
             color: white;
-            background-color: #28a745;
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+        }
+
+        .mobile-menu-button {
+            display: none;
+            background: transparent;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
-            text-align: center;
+            padding: 0.5rem;
         }
-        #login-button:hover {
-            background-color: #218838;
-        }
-        #auth-modal {
+
+        /* Mobile menu */
+        .mobile-menu {
             display: none;
             position: fixed;
             top: 0;
@@ -37,245 +126,793 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
             z-index: 1000;
         }
-        #auth-modal .modal-content {
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            width: 400px;
-            max-width: 90%;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+        .mobile-menu-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background-color: white;
+            padding: 1rem;
+            overflow-y: auto;
         }
-        #modal-header {
-            text-align: center;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-        #modal-header h2 {
-            margin: 0;
-            font-size: 24px;
-        }
-        .tab-buttons {
+
+        .mobile-menu-header {
             display: flex;
-            justify-content: center;
-            margin: 20px 0;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
         }
-        .tab-buttons button {
-            flex: 1;
-            padding: 10px;
+
+        .mobile-menu-close {
+            background: transparent;
             border: none;
+            font-size: 1.5rem;
             cursor: pointer;
-            font-size: 16px;
-            background-color: #f0f0f0;
+        }
+
+        .mobile-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .mobile-nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            text-decoration: none;
             color: #333;
-            border-bottom: 2px solid transparent;
+            border-radius: 0.25rem;
+            transition: background-color 0.3s;
         }
-        .tab-buttons button.active {
-            background-color: #ffffff;
-            border-bottom: 2px solid #28a745;
-            font-weight: bold;
+
+        .mobile-nav-link:hover {
+            background-color: #f0f0f0;
         }
-        .form-content {
+
+        .mobile-nav-link svg {
+            margin-right: 0.75rem;
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        /* Main Content Styles */
+        main {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        /* Login Styles */
+        .login-container {
+            width: 100%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .login-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .login-welcome {
             display: none;
         }
-        .form-content.active {
+
+        @media (min-width: 768px) {
+            .login-welcome {
+                display: block;
+                padding-right: 2rem;
+            }
+        }
+
+        .login-heading {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #28a745; /* basket-green */
+            margin-bottom: 1rem;
+        }
+
+        .login-subtext {
+            color: #666;
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+        }
+
+        .benefit-list {
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .benefit-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            margin-right: 0.75rem;
+            margin-top: 0.125rem;
+            color: #28a745; /* basket-green */
+        }
+
+        .benefit-content h3 {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .benefit-content p {
+            color: #666;
+        }
+
+        .continue-shopping {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            margin-top: 1.5rem;
+            background-color: transparent;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 0.25rem;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .continue-shopping:hover {
+            background-color: #f0f0f0;
+        }
+
+        .continue-shopping svg {
+            margin-left: 0.5rem;
+            width: 1rem;
+            height: 1rem;
+        }
+
+        /* Auth Modal Styles */
+        .auth-modal {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .auth-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .auth-tab.active {
+            background-color: white;
+            border-bottom: 2px solid #28a745; /* basket-green */
+        }
+
+        .auth-form-container {
+            padding: 1.5rem;
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
             display: block;
         }
+
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 1rem;
         }
+
         .form-group label {
             display: block;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 0.5rem;
         }
+
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 14px;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 0.25rem;
+            font-size: 1rem;
         }
-        .submit-btn {
+
+        .auth-button {
             width: 100%;
-            padding: 10px;
-            background-color: #28a745;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            background-color: #28a745; /* basket-green */
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 0.25rem;
+            font-size: 1rem;
+            font-weight: bold;
             cursor: pointer;
-            font-size: 16px;
+            transition: background-color 0.3s;
         }
-        .submit-btn:hover {
-            background-color: #218838;
+
+        .auth-button:hover {
+            background-color: #218838; /* basket-darkgreen */
         }
-        /* Close button styles */
-        #close-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: transparent;
-            border: none;
-            font-size: 20px;
-            color: #333;
-            cursor: pointer;
-        }
-        #close-button:hover {
-            color: #e74c3c;
-        }
-        /* Success pop-up styles */
-        #success-popup {
+
+        /* Success/Error States */
+        .success-message,
+        .error-message {
             display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            z-index: 1001;
             text-align: center;
+            padding: 2rem;
+        }
+
+        .state-icon {
+            width: 4rem;
+            height: 4rem;
+            margin: 0 auto 1rem;
+        }
+
+        .success-message .state-icon {
+            color: #28a745; /* basket-green */
+        }
+
+        .error-message .state-icon {
+            color: #dc3545; /* basket-red */
+        }
+
+        .state-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .success-message .state-title {
+            color: #28a745; /* basket-green */
+        }
+
+        .error-message .state-title {
+            color: #dc3545; /* basket-red */
+        }
+
+        .state-text {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .state-button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.25rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .success-message .state-button {
+            background-color: #28a745; /* basket-green */
+            color: white;
+        }
+
+        .error-message .state-button {
+            background-color: #dc3545; /* basket-red */
+            color: white;
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: #f0f0f0;
+            padding-top: 2.5rem;
+            padding-bottom: 1.5rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .footer-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .footer-heading {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .footer-text {
+            color: #666;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-link-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-link {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-link:hover {
+            color: #28a745; /* basket-green */
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            color: #666;
+            transition: color 0.3s;
+        }
+
+        .social-link:hover {
+            color: #28a745; /* basket-green */
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #ddd;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            text-align: center;
+            color: #666;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .desktop-nav {
+                display: none;
+            }
+
+            .mobile-menu-button {
+                display: block;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Login Button -->
-    <button id="login-button" onclick="openAuthModal()">Login</button>
-
-    <!-- Authentication Modal -->
-    <div id="auth-modal">
-        <div class="modal-content">
-            <!-- Close Button -->
-            <button id="close-button" onclick="closeAuthModal()">×</button>
-
-            <div id="modal-header">
-                <h2>Authentication</h2>
-            </div>
-            <div class="tab-buttons">
-                <button id="login-tab" class="active" onclick="showTab('login')">Login</button>
-                <button id="signup-tab" onclick="showTab('signup')">Sign Up</button>
-            </div>
-            <div id="auth-forms">
-                <!-- Login Form -->
-                <div id="login-form" class="form-content active">
-                    <form onsubmit="return handleLogin()">
-                        <div class="form-group">
-                            <label for="login-email">Email</label>
-                            <input type="email" id="login-email" placeholder="Enter your email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="login-password">Password</label>
-                            <input type="password" id="login-password" placeholder="Enter your password" required>
-                        </div>
-                        <button type="submit" class="submit-btn">Login</button>
-                    </form>
-                </div>
-
-                <!-- Sign-Up Form -->
-                <div id="signup-form" class="form-content">
-                    <form onsubmit="return handleSignUp()">
-                        <div class="form-group">
-                            <label for="sign-up-name">Full Name</label>
-                            <input type="text" id="sign-up-name" placeholder="Enter your full name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="sign-up-email">Email</label>
-                            <input type="email" id="sign-up-email" placeholder="Enter your email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="sign-up-password">Password</label>
-                            <input type="password" id="sign-up-password" placeholder="Create a password" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="sign-up-dob">Date of Birth</label>
-                            <input type="date" id="sign-up-dob" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="sign-up-gender">Gender</label>
-                            <select id="sign-up-gender" required>
-                                <option value="" disabled selected>Select Gender</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="sign-up-country">Country</label>
-                            <input type="text" id="sign-up-country" placeholder="Enter your country" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="sign-up-district">District</label>
-                            <input type="text" id="sign-up-district" placeholder="Enter your district" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="sign-up-address">Address</label>
-                            <input type="text" id="sign-up-address" placeholder="Enter your full address" required>
-                        </div>
-                        <button type="submit" class="submit-btn">Sign Up</button>
-                    </form>
+    <!-- Header with Menu Bar -->
+    <header>
+        <div class="container">
+            <div class="header-container">
+                <a href="home.html" class="logo">
+                    <span>Quality Basket</span>
+                </a>
+                
+                <nav class="desktop-nav">
+                    <a href="home.html" class="nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                        <span>Home</span>
+                    </a>
+                    
+                    <a href="store.html" class="nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"></path><path d="M6 9V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"></path></svg>
+                        <span>Stores</span>
+                    </a>
+                    
+                    <a href="product.html" class="nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                        <span>Products</span>
+                    </a>
+                    
+                    <a href="login.html" class="nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span>Login</span>
+                    </a>
+                    
+                    <a href="orders.html" class="nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M9 10h6"></path><path d="M12 14V6"></path></svg>
+                        <span>Orders</span>
+                    </a>
+                    
+                    <a href="delivered.html" class="nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                        <span>Delivered</span>
+                    </a>
+                </nav>
+                
+                <div class="nav-buttons">
+                    <a href="#" class="cart-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                        <span class="cart-badge" id="cart-count">0</span>
+                    </a>
+                    
+                    <button class="mobile-menu-button" id="mobile-menu-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>
+                    </button>
                 </div>
             </div>
         </div>
+    </header>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-menu-content">
+            <div class="mobile-menu-header">
+                <span class="footer-heading">Quality Basket</span>
+                <button class="mobile-menu-close" id="mobile-menu-close">×</button>
+            </div>
+            <nav class="mobile-nav">
+                <a href="home.html" class="mobile-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span>Home</span>
+                </a>
+                
+                <a href="store.html" class="mobile-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"></path><path d="M6 9V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"></path></svg>
+                    <span>Stores</span>
+                </a>
+                
+                <a href="product.html" class="mobile-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                    <span>Products</span>
+                </a>
+                
+                <a href="login.html" class="mobile-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <span>Login</span>
+                </a>
+                
+                <a href="orders.html" class="mobile-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M9 10h6"></path><path d="M12 14V6"></path></svg>
+                    <span>Orders</span>
+                </a>
+                
+                <a href="delivered.html" class="mobile-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                    <span>Delivered</span>
+                </a>
+            </nav>
+        </div>
     </div>
+    
+    <main>
+        <div class="login-container">
+            <!-- Left side - Welcome message and benefits -->
+            <div class="login-welcome">
+                <h1 class="login-heading">Welcome to Quality Basket</h1>
+                <p class="login-subtext">
+                    Sign in to access your account and enjoy a personalized shopping experience.
+                </p>
+                
+                <div class="benefit-list">
+                    <div class="benefit-item">
+                        <svg class="benefit-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        <div class="benefit-content">
+                            <h3>Track Your Orders</h3>
+                            <p>Keep track of your current and past orders easily.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <svg class="benefit-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        <div class="benefit-content">
+                            <h3>Save Your Favorites</h3>
+                            <p>Create lists of your favorite products for faster checkout.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <svg class="benefit-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        <div class="benefit-content">
+                            <h3>Get Personalized Recommendations</h3>
+                            <p>Receive personalized product suggestions based on your shopping habits.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <a href="home.html" class="continue-shopping">
+                    Continue browsing
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
+            </div>
+            
+            <!-- Right side - Auth forms -->
+            <div class="auth-modal">
+                <div class="auth-card" id="auth-card">
+                    <div class="auth-tabs">
+                        <div class="auth-tab active" id="login-tab">Login</div>
+                        <div class="auth-tab" id="signup-tab">Sign Up</div>
+                    </div>
+                    
+                    <div class="auth-form-container">
+                        <!-- Login Form -->
+                        <form class="auth-form active" id="login-form">
+                            <div class="form-group">
+                                <label for="login-email">Email</label>
+                                <input type="email" id="login-email" placeholder="Enter your email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="login-password">Password</label>
+                                <input type="password" id="login-password" placeholder="Enter your password" required>
+                            </div>
+                            <button type="submit" class="auth-button">Login</button>
+                        </form>
 
-    <!-- Success Pop-up -->
-    <div id="success-popup">
-        <h3 id="success-message"></h3>
-        <button onclick="redirectHome()">Go to Home Page</button>
-    </div>
-
+                        <!-- Sign-Up Form -->
+                        <form class="auth-form" id="signup-form">
+                            <div class="form-group">
+                                <label for="signup-name">Full Name</label>
+                                <input type="text" id="signup-name" placeholder="Enter your full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="signup-email">Email</label>
+                                <input type="email" id="signup-email" placeholder="Enter your email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="signup-password">Password</label>
+                                <input type="password" id="signup-password" placeholder="Create a password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="signup-dob">Date of Birth</label>
+                                <input type="date" id="signup-dob" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="signup-gender">Gender</label>
+                                <select id="signup-gender" required>
+                                    <option value="" disabled selected>Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="signup-address">Address</label>
+                                <input type="text" id="signup-address" placeholder="Enter your address" required>
+                            </div>
+                            <button type="submit" class="auth-button">Sign Up</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Success Message -->
+                <div class="success-message" id="success-message">
+                    <svg class="state-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    <h2 class="state-title">Authentication Successful!</h2>
+                    <p class="state-text">You've successfully logged in. Redirecting you to the homepage...</p>
+                </div>
+                
+                <!-- Error Message -->
+                <div class="error-message" id="error-message">
+                    <svg class="state-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <h2 class="state-title">Authentication Failed</h2>
+                    <p class="state-text">We couldn't authenticate you. Please check your credentials and try again.</p>
+                    <button class="state-button" id="try-again-button">Try Again</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <!-- About Us -->
+                <div>
+                    <h3 class="footer-heading">About Quality Basket</h3>
+                    <p class="footer-text">
+                        We connect you with the freshest groceries from local stores, bringing quality products right to your doorstep.
+                    </p>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="footer-heading">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li class="footer-link-item">
+                            <a href="home.html" class="footer-link">Home</a>
+                        </li>
+                        <li class="footer-link-item">
+                            <a href="store.html" class="footer-link">Stores</a>
+                        </li>
+                        <li class="footer-link-item">
+                            <a href="#" class="footer-link">Shopping Cart</a>
+                        </li>
+                        <li class="footer-link-item">
+                            <a href="login.html" class="footer-link">My Account</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Contact Info -->
+                <div>
+                    <h3 class="footer-heading">Contact Us</h3>
+                    <ul class="footer-links">
+                        <li class="footer-link-item">Email: support@qualitybasket.com</li>
+                        <li class="footer-link-item">Phone: +1 (555) 123-4567</li>
+                        <li class="footer-link-item">Address: 123 Grocery Lane, Food City</li>
+                    </ul>
+                </div>
+                
+                <!-- Social Media -->
+                <div>
+                    <h3 class="footer-heading">Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                        </a>
+                        <a href="#" class="social-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                        </a>
+                        <a href="#" class="social-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Quality Basket. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
     <script>
-        // Function to show login or signup tab
-        function showTab(tab) {
-            document.querySelectorAll('.form-content').forEach(el => el.classList.remove('active'));
-            document.querySelector(`#${tab}-form`).classList.add('active');
-            document.querySelectorAll('.tab-buttons button').forEach(el => el.classList.remove('active'));
-            document.querySelector(`#${tab}-tab`).classList.add('active');
-        }
-
-        // Open modal
-        function openAuthModal() {
-            document.getElementById('auth-modal').style.display = 'flex';
-        }
-
-        // Close modal
-        function closeAuthModal() {
-            document.getElementById('auth-modal').style.display = 'none';
-        }
-
-        // Sample login handler
-        function handleLogin() {
-            alert("Login submitted!");
-            showSuccessPopup("Login successful!");
-            return false; // Prevent default submission for demonstration
-        }
-
-        // Sample signup handler
-        function handleSignUp() {
-            alert("Sign-Up submitted!");
-            showSuccessPopup("Sign-Up successful!");
-            return false; // Prevent default submission for demonstration
-        }
-
-        // Display success pop-up
-        function showSuccessPopup(message) {
-            document.getElementById('success-message').innerText = message;
-            document.getElementById('success-popup').style.display = 'block';
-
-            // Redirect after a short delay (2 seconds)
-            setTimeout(() => {
-                window.location.href = "index.html"; // Redirect to index page
-            }, 2000); // 2 seconds delay
-        }
-
-        // Redirect to home page
-        function redirectHome() {
-            window.location.href = "index.html"; // Replace with actual index page URL
+        document.addEventListener('DOMContentLoaded', () => {
+            // Mobile Menu Toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuClose = document.getElementById('mobile-menu-close');
+            
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.style.display = 'block';
+            });
+            
+            mobileMenuClose.addEventListener('click', () => {
+                mobileMenu.style.display = 'none';
+            });
+            
+            // Update cart count
+            updateCartCount();
+            
+            // Auth tabs
+            const loginTab = document.getElementById('login-tab');
+            const signupTab = document.getElementById('signup-tab');
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+            
+            loginTab.addEventListener('click', () => {
+                loginTab.classList.add('active');
+                signupTab.classList.remove('active');
+                loginForm.classList.add('active');
+                signupForm.classList.remove('active');
+            });
+            
+            signupTab.addEventListener('click', () => {
+                signupTab.classList.add('active');
+                loginTab.classList.remove('active');
+                signupForm.classList.add('active');
+                loginForm.classList.remove('active');
+            });
+            
+            // Handle login form submission
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                
+                // In a real app, we would validate credentials against a server/API
+                // For this demo, we'll just check if the fields are not empty
+                if (email && password) {
+                    // Mock successful login
+                    const userData = {
+                        name: 'Demo User',
+                        email: email,
+                        isLoggedIn: true
+                    };
+                    
+                    // Save user data to localStorage
+                    localStorage.setItem('user', JSON.stringify(userData));
+                    
+                    // Show success message
+                    document.getElementById('auth-card').style.display = 'none';
+                    document.getElementById('success-message').style.display = 'block';
+                    
+                    // Redirect after delay
+                    setTimeout(() => {
+                        window.location.href = 'home.html';
+                    }, 2000);
+                } else {
+                    showError();
+                }
+            });
+            
+            // Handle signup form submission
+            signupForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('signup-name').value;
+                const email = document.getElementById('signup-email').value;
+                const password = document.getElementById('signup-password').value;
+                const dob = document.getElementById('signup-dob').value;
+                const gender = document.getElementById('signup-gender').value;
+                const address = document.getElementById('signup-address').value;
+                
+                // In a real app, we would send this data to a server/API
+                // For this demo, we'll just check if all fields are filled
+                if (name && email && password && dob && gender && address) {
+                    // Mock successful signup
+                    const userData = {
+                        name: name,
+                        email: email,
+                        dob: dob,
+                        gender: gender,
+                        address: address,
+                        isLoggedIn: true
+                    };
+                    
+                    // Save user data to localStorage
+                    localStorage.setItem('user', JSON.stringify(userData));
+                    
+                    // Show success message
+                    document.getElementById('auth-card').style.display = 'none';
+                    document.getElementById('success-message').style.display = 'block';
+                    
+                    // Redirect after delay
+                    setTimeout(() => {
+                        window.location.href = 'home.html';
+                    }, 2000);
+                } else {
+                    showError();
+                }
+            });
+            
+            // Error handling
+            const tryAgainButton = document.getElementById('try-again-button');
+            tryAgainButton.addEventListener('click', () => {
+                document.getElementById('error-message').style.display = 'none';
+                document.getElementById('auth-card').style.display = 'block';
+            });
+            
+            function showError() {
+                document.getElementById('auth-card').style.display = 'none';
+                document.getElementById('error-message').style.display = 'block';
+            }
+        });
+        
+        // Cart Count Update
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const totalCount = cart.reduce((total, item) => total + (item.quantity || 1), 0);
+            
+            const cartCount = document.getElementById('cart-count');
+            if (cartCount) {
+                cartCount.textContent = totalCount;
+            }
         }
     </script>
 </body>
